@@ -2,28 +2,28 @@
 - name: Initiating service stop request
   hosts: master
   tasks:
-    - name: Stopping portainer service
+    - name: Stopping cookbook service
       community.docker.docker_stack:
-        name: portainer
+        name: cookbook
         state: absent
         compose:
-          - /data/primary/compose/portainer/portainer.yml
+          - /data/primary/compose/cookbook/cookbook.yml
 
 
 
 - name: Backup process started
   hosts: backup
   tasks:
-    - name: Initiating portainer backup
+    - name: Initiating cookbook backup
       become: yes
-      shell: rclone --config /home/worker01/.config/rclone/rclone.conf sync /data/primary/docker/portainer gdrive:/Backup/container_data/portainer
+      shell: rclone --config /home/worker01/.config/rclone/rclone.conf sync /data/primary/docker/cookbook gdrive:/Backup/container_data/cookbook
 
-- name: Getting portainer service back to run
+- name: Getting cookbook service back to run
   hosts: master
   tasks:
-    - name: Starting portainer service
+    - name: Starting cookbook service
       community.docker.docker_stack:
-        name: portainer
+        name: cookbook
         state: present
         compose:
-          - /data/primary/compose/portainer/portainer.yml
+          - /data/primary/compose/cookbook/cookbook.yml
