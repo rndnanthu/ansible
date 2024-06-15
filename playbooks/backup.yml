@@ -1,0 +1,29 @@
+---
+- name: Initiating service stop request
+  hosts: master
+  tasks:
+    - name: Stopping portainer service
+      community.docker.docker_stack:
+        name: portainer
+        state: absent
+        compose:
+          - /data/primary/compose/portainer/portainer.yml
+
+
+
+- name: Backup process started
+  hosts: backup
+  tasks:
+    - name: Initiating portainer backup
+      become: yes
+      shell: rclone --config /home/worker01/.config/rclone/rclone.conf sync /data/primary/docker/portainer gdrive:/Backup/container_data/portainer
+
+- name: Getting portainer service back to run
+  hosts: master
+  tasks:
+    - name: Starting portainer service
+      community.docker.docker_stack:
+        name: portainer
+        state: present
+        compose:
+          - /data/primary/compose/portainer/portainer.yml
