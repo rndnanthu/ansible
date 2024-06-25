@@ -1,0 +1,7 @@
+---
+- hosts: master
+
+  become: true
+  tasks:
+    - name: update apt packages
+      command: sh /data/primary/compose/portainer/ptup.sh
